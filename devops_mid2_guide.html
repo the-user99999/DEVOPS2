@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DevOps Mid-2 — Complete Master Q&A Guide</title>
+<style>
+  :root {
+    --bg: #0a0d12; --surface: #141821; --surface-raised: #1c2128; --surface-strong: #252b35;
+    --border: #2a3038; --border-light: #3a414c;
+    --text-primary: #e6edf3; --text-secondary: #adbac7; --text-tertiary: #768390;
+    --nv-green: #76b900; --nv-green-soft: rgba(118,185,0,0.12);
+    --cyan: #00d4ff; --cyan-soft: rgba(0,212,255,0.1);
+    --purple: #b794f4; --purple-soft: rgba(183,148,244,0.1);
+    --orange: #ff9b50; --orange-soft: rgba(255,155,80,0.1);
+    --red: #ff6b6b; --red-soft: rgba(255,107,107,0.1);
+    --yellow: #ffc857; --yellow-soft: rgba(255,200,87,0.1);
+    --font-sans: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --font-mono: "JetBrains Mono","SF Mono","Fira Code",Consolas,monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: var(--font-sans); background: var(--bg); color: var(--text-primary); line-height: 1.7; font-size: 15px; }
+  .wrap { display: flex; min-height: 100vh; }
+  .sidebar { width: 290px; background: var(--surface); border-right: 1px solid var(--border); padding: 24px 18px; position: fixed; top:0; left:0; bottom:0; overflow-y:auto; z-index:100; }
+  .logo { font-size: 17px; font-weight: 800; letter-spacing: -0.3px; margin-bottom: 4px; color: var(--nv-green); }
+  .logo-sub { font-size: 11px; color: var(--text-tertiary); margin-bottom: 20px; }
+  .progress-wrap { margin-bottom: 18px; }
+  .progress-bg { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .progress-fill { height:100%; background: linear-gradient(90deg, var(--nv-green), var(--cyan)); width:0%; transition: width 0.4s ease; }
+  .progress-txt { font-size:11px; color:var(--text-tertiary); margin-top:6px; text-align:right; }
+  .search-box { width:100%; padding:9px 13px; border-radius:8px; border:1px solid var(--border); background:var(--surface-raised); color:var(--text-primary); font-family:inherit; font-size:13px; margin-bottom:14px; outline:none; }
+  .search-box:focus { border-color: var(--nv-green); }
+  .search-results { position:absolute; top:125px; left:18px; right:18px; background:var(--surface-raised); border:1px solid var(--border); border-radius:10px; max-height:300px; overflow-y:auto; box-shadow:0 8px 24px rgba(0,0,0,0.5); display:none; z-index:200; }
+  .search-result { padding:10px 14px; cursor:pointer; border-bottom:1px solid var(--border); font-size:13px; }
+  .search-result:hover { background:var(--surface-strong); }
+  .sr-title { font-weight:600; color:var(--text-primary); }
+  .sr-snippet { color:var(--text-tertiary); font-size:12px; margin-top:2px; }
+  .unit-btn { width:100%; text-align:left; padding:10px 14px; border-radius:8px; border:none; background:transparent; cursor:pointer; font-size:13px; font-weight:600; color:var(--text-secondary); transition:all 0.15s; font-family:inherit; display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; }
+  .unit-btn:hover { background:var(--surface-raised); color:var(--text-primary); }
+  .unit-btn.active { background:var(--surface-strong); color:var(--nv-green); }
+  .unit-btn .ch { font-size:10px; color:var(--text-tertiary); transition:transform 0.2s; }
+  .unit-btn.active .ch { transform: rotate(90deg); color:var(--nv-green); }
+  .sec-list { margin-left:8px; margin-bottom:12px; display:none; }
+  .sec-list.open { display:block; }
+  .sec-link { display:block; padding:6px 12px 6px 22px; font-size:11.5px; color:var(--text-tertiary); text-decoration:none; border-radius:6px; transition:all 0.15s; cursor:pointer; border-left:2px solid transparent; line-height:1.4; }
+  .sec-link:hover, .sec-link.active { color:var(--text-primary); background:var(--surface-raised); border-left-color:var(--nv-green); }
+  .main { margin-left:290px; flex:1; padding:32px 48px; max-width:980px; }
+  .mobile-toggle { display:none; position:fixed; top:14px; left:14px; z-index:300; background:var(--surface-strong); border:1px solid var(--border); color:var(--text-primary); padding:8px 12px; border-radius:8px; cursor:pointer; font-size:14px; }
+  .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:90; }
+  .overlay.open { display:block; }
+  .q-block { margin-bottom:48px; }
+  .q-header { background:linear-gradient(135deg, var(--surface) 0%, var(--surface-raised) 100%); border:1px solid var(--border); border-left:4px solid var(--nv-green); border-radius:12px; padding:20px 24px; margin-bottom:24px; }
+  .q-num { font-size:12px; font-weight:700; color:var(--nv-green); text-transform:uppercase; letter-spacing:0.8px; margin-bottom:6px; }
+  .q-title { font-size:19px; font-weight:700; line-height:1.35; color:var(--text-primary); }
+  .q-marks { display:inline-block; margin-top:10px; padding:3px 10px; border-radius:6px; background:var(--nv-green-soft); color:var(--nv-green); font-size:11px; font-weight:700; }
+  h2 { font-size:18px; font-weight:700; margin-top:32px; margin-bottom:14px; color:var(--text-primary); padding-bottom:8px; border-bottom:1px solid var(--border); }
+  h3 { font-size:16px; font-weight:700; margin-top:24px; margin-bottom:10px; color:var(--cyan); }
+  h4 { font-size:14px; font-weight:700; margin-top:18px; margin-bottom:8px; color:var(--text-secondary); }
+  p { margin-bottom:12px; color:var(--text-secondary); }
+  ul, ol { margin-bottom:16px; padding-left:24px; color:var(--text-secondary); }
+  li { margin-bottom:6px; }
+  li strong { color:var(--text-primary); }
+  code { font-family:var(--font-mono); font-size:13px; background:var(--surface-strong); padding:2px 6px; border-radius:4px; color:var(--nv-green); }
+  .mark-tag { display:inline-block; padding:2px 8px; border-radius:5px; background:var(--cyan-soft); color:var(--cyan); font-size:11px; font-weight:700; margin-bottom:10px; }
+  .note { border-left:3px solid var(--nv-green); padding:12px 16px; margin:14px 0; color:var(--text-secondary); font-size:13px; background:var(--nv-green-soft); border-radius:0 8px 8px 0; }
+  .note strong { color:var(--nv-green); }
+  .code-block { background:#0d1117; border:1px solid var(--border); border-radius:10px; padding:16px; overflow-x:auto; margin:14px 0; position:relative; }
+  .code-block pre { font-family:var(--font-mono); font-size:12.5px; line-height:1.6; color:#c9d1d9; margin:0; white-space:pre; }
+  .code-label { position:absolute; top:8px; right:12px; font-size:10px; color:var(--text-tertiary); font-family:var(--font-mono); background:var(--surface); padding:2px 8px; border-radius:4px; }
+  table { width:100%; border-collapse:collapse; margin:14px 0; font-size:12.5px; background:var(--surface); border-radius:8px; overflow:hidden; }
+  th, td { padding:10px 12px; text-align:left; border-bottom:1px solid var(--border); vertical-align:top; }
+  th { font-weight:700; color:var(--text-primary); background:var(--surface-raised); font-size:11px; text-transform:uppercase; letter-spacing:0.5px; }
+  td { color:var(--text-secondary); }
+  td strong { color:var(--nv-green); }
+  tr:hover td { background:var(--surface-raised); }
+  .diagram-box { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:24px; margin:20px 0; overflow-x:auto; }
+  .diagram-title { text-align:center; font-size:12px; font-weight:700; color:var(--nv-green); text-transform:uppercase; letter-spacing:1px; margin-bottom:16px; }
+  .arch-stack { display:flex; flex-direction:column; align-items:center; gap:6px; }
+  .arch-layer { padding:14px 20px; border:1px solid var(--border); border-radius:8px; background:var(--surface-raised); text-align:center; min-width:400px; }
+  .arch-layer .al-name { font-weight:700; font-size:13px; color:var(--text-primary); margin-bottom:4px; }
+  .arch-layer .al-desc { font-size:11px; color:var(--text-tertiary); }
+  .arch-layer.control { border-color:var(--cyan); background:var(--cyan-soft); }
+  .arch-layer.control .al-name { color:var(--cyan); }
+  .arch-layer.worker { border-color:var(--nv-green); background:var(--nv-green-soft); }
+  .arch-layer.worker .al-name { color:var(--nv-green); }
+  .arch-layer.devops { border-color:var(--purple); background:var(--purple-soft); }
+  .arch-layer.devops .al-name { color:var(--purple); }
+  .arch-arrow { color:var(--text-tertiary); font-size:14px; }
+  .arch-arrow span { font-size:10px; display:block; }
+  .arch-sub-blocks { display:flex; gap:8px; margin-top:8px; }
+  .arch-sub { flex:1; padding:8px; border:1px solid var(--border); border-radius:6px; background:var(--surface); font-size:10px; text-align:center; }
+  .arch-sub strong { display:block; color:var(--text-primary); margin-bottom:2px; }
+  .pipeline-flow { display:flex; flex-direction:column; align-items:center; gap:8px; }
+  .pipe-stage { padding:12px 20px; border:1px solid var(--nv-green); background:var(--nv-green-soft); border-radius:8px; font-size:12px; color:var(--text-primary); text-align:center; min-width:350px; }
+  .pipe-stage strong { color:var(--nv-green); }
+  .pipe-stage.cyan { border-color:var(--cyan); background:var(--cyan-soft); }
+  .pipe-stage.cyan strong { color:var(--cyan); }
+  .pipe-stage.purple { border-color:var(--purple); background:var(--purple-soft); }
+  .pipe-stage.purple strong { color:var(--purple); }
+  .pipe-arrow { color:var(--nv-green); font-size:14px; }
+  .compare-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:14px 0; }
+  .compare-card { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:16px; }
+  .compare-card h4 { margin-top:0; padding-bottom:8px; border-bottom:1px solid var(--border); text-align:center; color:var(--cyan); }
+  .top-nav { display:flex; justify-content:space-between; align-items:center; margin-top:32px; padding-top:16px; border-top:1px solid var(--border); }
+  .nav-btn { padding:8px 16px; border-radius:8px; border:1px solid var(--border); background:var(--surface-raised); cursor:pointer; font-family:inherit; font-size:13px; color:var(--text-primary); transition:all 0.15s; }
+  .nav-btn:hover { background:var(--surface-strong); border-color:var(--nv-green); }
+  .nav-btn:disabled { opacity:0.3; cursor:not-allowed; }
+  .flashcard { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:24px; margin:14px 0; cursor:pointer; transition:all 0.2s; min-height:120px; display:flex; flex-direction:column; justify-content:center; }
+  .flashcard:hover { border-color:var(--nv-green); transform:translateY(-1px); }
+  .fc-q { font-size:16px; font-weight:700; text-align:center; color:var(--text-primary); }
+  .fc-a { font-size:13px; color:var(--text-secondary); text-align:center; margin-top:12px; display:none; line-height:1.6; }
+  .flashcard.flipped .fc-q { display:none; }
+  .flashcard.flipped .fc-a { display:block; }
+  .fc-hint { font-size:11px; color:var(--text-tertiary); text-align:center; margin-top:8px; }
+  .flashcard.flipped .fc-hint { display:none; }
+  .qa-card { background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--cyan); border-radius:10px; padding:16px 20px; margin:12px 0; }
+  .qa-card .qa-q { font-size:14px; font-weight:700; color:var(--cyan); margin-bottom:8px; }
+  .qa-card .qa-a { font-size:13px; color:var(--text-secondary); line-height:1.6; }
+  .qa-card .qa-a strong { color:var(--text-primary); }
+  .qa-card .qa-a ul, .qa-card .qa-a ol { margin:6px 0 6px 18px; font-size:13px; }
+  .section { display:none; }
+  .section.active { display:block; animation: fadeIn 0.3s ease; }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+  .unit-heading { font-size:26px; font-weight:800; margin-bottom:8px; color:var(--text-primary); letter-spacing:-0.5px; }
+  .unit-sub { font-size:14px; color:var(--text-tertiary); margin-bottom:32px; }
+  @media (max-width:900px) {
+    .sidebar { transform:translateX(-100%); transition:transform 0.3s; }
+    .sidebar.open { transform:translateX(0); }
+    .main { margin-left:0; padding:20px; max-width:100%; }
+    .mobile-toggle { display:block; }
+    .compare-grid { grid-template-columns:1fr; }
+    .arch-layer { min-width:auto; width:100%; }
+  }
+</style>
+</head>
+<body>
+<button class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</button>
+<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+<div class="wrap">
+<aside class="sidebar" id="sidebar">
+  <div class="logo">▚ DEVOPS MID-2</div>
+  <div class="logo-sub">Complete Master Q&A Guide</div>
+  <div class="progress-wrap">
+    <div class="progress-bg"><div class="progress-fill" id="progressBar"></div></div>
+    <div class="progress-txt" id="progressText">0% complete</div>
+  </div>
+  <input type="text" class="search-box" id="searchBox" placeholder="Search topics..." autocomplete="off">
+  <div id="searchResults" class="search-results"></div>
+  <nav id="sidebarNav"></nav>
+</aside>
+<main class="main" id="mainContent">
+<div id="contentArea"></div>
+</main>
+</div>
+<script>
+const courseData = {
+  units: [
+    {
+      id: "u3", title: "Unit III: VCS, Containers & K8s",
+      sections: [
+        {
+          id: "u3pa", title: "Part-A: 2-Mark Questions (4 Q)",
+          content: `
+<div class="unit-heading">Unit III: Version Control, Containerization & Kubernetes</div>
+<div class="unit-sub">Part-A — 2-Mark Quick Revision</div>
+
+<div class="q-block">
+<div class="q-header">
+  <div class="q-num">Part-A · 2 Marks Each</div>
+  <div class="q-title">Short Answer Questions — 4 Questions</div>
+  <div class="q-marks">2M × 4 = 8 Marks</div>
+</div>
+
+<div class="qa-card">
+  <div class="qa-q">Q1: Differentiate between a Docker Image and a Docker Container. [2M, CO-3, BL-2]</div>
+  <div class="qa-a">
+    <p><strong>Docker Image:</strong> A <strong>read-only, immutable static blueprint template</strong> containing application source code, libraries, dependencies, and configuration files (stored in registries like Docker Hub).</p>
+    <p><strong>Docker Container:</strong> A <strong>runnable, isolated active runtime process instance</strong> instantiated from a Docker image with an added ephemeral read-write filesystem layer.</p>
+  </div>
+</div>
+
+<div class="qa-card">
+  <div class="qa-q">Q2: Differentiate between Kubernetes ConfigMaps and Secrets. [2M, CO-3, BL-2]</div>
+  <div class="qa-a">
+    <p><strong>ConfigMap:</strong> Stores <strong>non-confidential configuration settings</strong> (such as environment variables, domain endpoints, and feature flags) as plain-text key-value pairs.</p>
+    <p><strong>Secret:</strong> Stores <strong>confidential, sensitive data</strong> (such as API keys, database credentials, and TLS certificates) encoded in <strong>Base64</strong> and encrypted at rest within <code>etcd</code>.</p>
+  </div>
+</div>
+
+<div class="qa-card">
+  <div class="qa-q">Q3: What is the primary purpose of Kubernetes? [2M, CO-3, BL-1]</div>
+  <div class="qa-a">
+    <p><strong>Kubernetes (K8s)</strong> is an open-source container orchestration platform designed to automate container <strong>deployment, horizontal autoscaling, self-healing, load balancing, and storage orchestration</strong> across a cluster of nodes.</p>
+  </div>
+</div>
+
+<div class="qa-card">
+  <div class="qa-q">Q4: What are the main advantages of using Docker Hub? [2M, CO-3, BL-1]</div>
+  <div class="qa-a">
+    <p>Provides a centralized public/private container registry for sharing container images, <strong>automated image security vulnerability scanning</strong>, and seamless <strong>webhook integration</strong> with CI/CD build tools.</p>
+  </div>
+</div>
+</div>
+          `
+        },
+        {
+          id: "u3q1", title: "Q1: Kubernetes Architecture & Flat Networking",
+          content: `
+<div class="q-block">
+<div class="q-header">
+  <div class="q-num">Question 1 · 8M / 10M | CO-3, BL-3</div>
+  <div class="q-title">Explain Kubernetes Architecture (Control Plane vs. Worker Nodes) and its Flat Networking Model.</div>
+  <div class="q-marks">8M / 10M</div>
+</div>
+
+<h2>1. Kubernetes Architecture Overview</h2>
+<p>Kubernetes uses a master-worker client-server architecture. The cluster consists of a centralized <strong>Control Plane</strong> (the brain) and multiple <strong>Worker Nodes</strong> (execution engines where applications run).</p>
+
+<div class="diagram-box">
+  <div class="diagram-title">Kubernetes Cluster Architecture</div>
+  <div class="arch-stack">
+    <div class="arch-layer control">
+      <div class="al-name">CONTROL PLANE (MASTER)</div>
+      <div class="al-desc">The brain of the cluster — manages all scheduling and state</div>
+      <div class="arch-sub-blocks">
+        <div class="arch-sub"><strong>kube-apiserver</strong>Front-end gateway for kubectl</div>
+        <div class="arch-sub"><strong>etcd</strong>Distributed key-value state DB</div>
+        <div class="arch-sub"><strong>kube-scheduler</strong>Assigns Pods to nodes</div>
+        <div class="arch-sub"><strong>kube-controller-manager</strong>Background control loops</div>
+      </div>
+    </div>
+    <div class="arch-arrow">↓<span>API Calls / Scheduling</span></div>
+    <div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap;">
+      <div style="flex:1; min-width:220px;">
+        <div class="arch-layer worker" style="min-width:auto;">
+          <div class="al-name">WORKER NODE 1</div>
+          <div class="arch-sub-blocks">
+            <div class="arch-sub"><strong>kubelet</strong>Node agent</div>
+            <div class="arch-sub"><strong>kube-proxy</strong>Network routing</div>
+            <div class="arch-sub"><strong>Container Runtime</strong>containerd / Docker</div>
+            <div class="arch-sub"><strong>Pods</strong>Running containers</div>
+          </div>
+        </div>
+      </div>
+      <div style="flex:1; min-width:220px;">
+        <div class="arch-layer worker" style="min-width:auto;">
+          <div class="al-name">WORKER NODE 2</div>
+          <div class="arch-sub-blocks">
+            <div class="arch-sub"><strong>kubelet</strong>Node agent</div>
+            <div class="arch-sub"><strong>kube-proxy</strong>Network routing</div>
+            <div class="arch-sub"><strong>Container Runtime</strong>containerd / Docker</div>
+            <div class="arch-sub"><strong>Pods</strong>Running containers</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h3>A. Control Plane Components (Master Node)</h3>
+<ul>
+  <li><strong><code>kube-apiserver</code>:</strong> The front-end management gateway exposing cluster endpoints for <code>kubectl</code> commands and administrative API requests.</li>
+  <li><strong><code>etcd</code>:</strong> A highly available, distributed key-value store holding the complete cluster state, configuration, and secrets.</li>
+  <li><strong><code>kube-scheduler</code>:</strong> Evaluates resource requirements and assigns unscheduled Pods onto optimal worker nodes.</li>
+  <li><strong><code>kube-controller-manager</code>:</strong> Runs background control loops (Node Controller, ReplicaSet Controller) to regulate the cluster toward its desired state.</li>
+</ul>
+
+<h3>B. Worker Node Components</h3>
+<ul>
+  <li><strong><code>kubelet</code>:</strong> The primary node agent ensuring that assigned Pods and containers are healthy and running.</li>
+  <li><strong><code>kube-proxy</code>:</strong> Manages network routing rules, <code>iptables</code>/<code>IPVS</code>, and load balancing for Services running on the node.</li>
+  <li><strong>Container Runtime:</strong> Software responsible for executing containers (e.g., <code>containerd</code>, CRI-O, Docker).</li>
+</ul>
+
+<h2>2. The Kubernetes Flat Networking Model</h2>
+<p>Kubernetes enforces a strict, non-NAT, flat networking model across the entire cluster:</p>
+<ul>
+  <li><strong>Unique IP per Pod:</strong> Every Pod receives a unique, routable IP address within the cluster.</li>
+  <li><strong>Direct Pod-to-Pod Communication:</strong> Any Pod can communicate directly with any other Pod across any node without Network Address Translation (NAT).</li>
+  <li><strong>Container Network Interface (CNI):</strong> Implemented via network overlay plugins like <strong>Calico</strong>, <strong>Flannel</strong>, or <strong>Cilium</strong>.</li>
+</ul>
+
+<div class="note">
+  <strong>Reference:</strong> Kubernetes.pdf, Slides 7, 9, 10, 11, 19, 20.
+</div>
+</div>
+          `
+        },
+        {
+          id: "u3q2", title: "Q2: K8s Scaling & Persistent Storage",
+          content: `
+<div class="q-block">
+<div class="q-header">
+  <div class="q-num">Question 2 · 8M / 10M | CO-3, BL-4</div>
+  <div class="q-title">Discuss how Kubernetes handles Application Scaling and Persistent Storage.</div>
+  <div class="q-marks">8M / 10M</div>
+</div>
+
+<h2>1. Application Scaling in Kubernetes</h2>
+<p>Containers are ephemeral and stateless by default. Kubernetes supports distinct scaling dimensions:</p>
+
+<table>
+  <tr><th>Scaling Type</th><th>What It Adjusts</th><th>Based On</th></tr>
+  <tr>
+    <td><strong>Horizontal Pod Autoscaler (HPA)</strong></td>
+    <td>Dynamically adjusts the number of <strong>Pod replicas</strong> in a Deployment</td>
+    <td>Observed CPU utilization, memory consumption, or custom application metrics</td>
+  </tr>
+  <tr>
+    <td><strong>Vertical Pod Autoscaler (VPA)</strong></td>
+    <td>Automatically adjusts CPU and memory <strong>resource requests and limits</strong> per container</td>
+    <td>Historical workload patterns, preventing OOM crashes</td>
+  </tr>
+  <tr>
+    <td><strong>Cluster Autoscaler</strong></td>
+    <td>Automatically adds or removes underlying <strong>worker nodes</strong></td>
+    <td>Pending pods that cannot be scheduled due to hardware resource exhaustion</td>
+  </tr>
+</table>
+
+<h2>2. Persistent Storage Management in Kubernetes</h2>
+<p>Because container filesystems are wiped when a Pod restarts, Kubernetes decouples data persistence from compute lifecycles using storage abstractions:</p>
+
+<div class="diagram-box">
+  <div class="diagram-title">Kubernetes Storage Abstraction Hierarchy</div>
+  <div class="arch-stack">
+    <div class="arch-layer devops">
+      <div class="al-name">PersistentVolumeClaim (PVC)</div>
+      <div class="al-desc">Developer's request for storage — specifies capacity &amp; access mode</div>
+    </div>
+    <div class="arch-arrow">↓ Binds to matching</div>
+    <div class="arch-layer control">
+      <div class="al-name">PersistentVolume (PV)</div>
+      <div class="al-desc">Cluster-wide storage resource — provisioned statically or via StorageClass</div>
+    </div>
+    <div class="arch-arrow">↓ Backed by</div>
+    <div class="arch-layer worker">
+      <div class="al-name">Actual Storage Backend</div>
+      <div class="al-desc">AWS EBS, Azure Disk, NFS, GCE Persistent Disk, etc.</div>
+    </div>
+  </div>
+</div>
+
+<ul>
+  <li><strong>Persistent Volume (PV):</strong> A cluster-wide storage resource provisioned statically by an admin or dynamically via a <strong>StorageClass</strong> (e.g., AWS EBS, Azure Disk, NFS).</li>
+  <li><strong>Persistent Volume Claim (PVC):</strong> A developer's declarative request for storage specifying capacity (e.g., <code>50Gi</code>) and access mode (<code>ReadWriteOnce</code>, <code>ReadWriteMany</code>). Kubernetes automatically binds matching PVs to PVCs.</li>
+  <li><strong>StatefulSets:</strong> A specialized workload controller designed for databases (MySQL, MongoDB) requiring <strong>stable network identifiers</strong> (e.g., <code>mysql-0</code>, <code>mysql-1</code>) and dedicated persistent storage bindings that survive Pod rescheduling.</li>
+</ul>
+
+<div class="note">
+  <strong>Reference:</strong> Kubernetes.pdf, Slides 23–33.
+</div>
+</div>
+          `
+        },
+        {
+          id: "u3q3", title: "Q3: Docker Architecture & Volume Management",
+          content: `
+<div class="q-block">
+<div class="q-header">
+  <div class="q-num">Question 3 · 8M | CO-3, BL-3</div>
+  <div class="q-title">Explain Docker Architecture and Volume Management with Commands.</div>
+  <div class="q-marks">8M</div>
+</div>
+
+<h2>1. Docker Client-Server Architecture</h2>
+<p>Docker uses a client-server architecture where the <strong>Docker Client</strong> (<code>docker</code> CLI) communicates with the background <strong>Docker Daemon</strong> (<code>dockerd</code>) via REST APIs to build, run, and manage container workloads.</p>
+
+<div class="diagram-box">
+  <div class="diagram-title">Docker Client-Server Architecture</div>
+  <div class="arch-stack">
+    <div class="arch-layer control">
+      <div class="al-name">DOCKER CLIENT (CLI)</div>
+      <div class="al-desc">docker build, docker run, docker pull — user-facing commands</div>
+    </div>
+    <div class="arch-arrow">↓ REST API over Unix socket</div>
+    <div class="arch-layer devops">
+      <div class="al-name">DOCKER DAEMON (dockerd)</div>
+      <div class="al-desc">Background service that manages images, containers, networks, volumes</div>
+    </div>
+    <div class="arch-arrow">↓ Pulls/pushes images from</div>
+    <div class="arch-layer worker">
+      <div class="al-name">DOCKER REGISTRY / HUB</div>
+      <div class="al-desc">Centralized repository — Docker Hub, AWS ECR, private registries</div>
+    </div>
+  </div>
+</div>
+
+<ul>
+  <li><strong>Docker Host:</strong> The physical or virtual machine running the Docker engine.</li>
+  <li><strong>Docker Registry / Hub:</strong> A centralized repository for storing and distributing container images (e.g., Docker Hub, AWS ECR).</li>
+  <li><strong>Docker Images vs. Containers:</strong> An <strong>Image</strong> is a read-only immutable static blueprint, while a <strong>Container</strong> is a runnable, isolated active process instance created from an image.</li>
+</ul>
+
+<h2>2. Docker Volume Management</h2>
+<p>Docker volumes persist container data independently of the container lifecycle:</p>
+<ul>
+  <li><strong>Named Volumes:</strong> Managed safely inside <code>/var/lib/docker/volumes/</code> on Linux hosts.</li>
+</ul>
+
+<div class="code-block">
+  <span class="code-label">docker_volume_commands.sh</span>
+  <pre><span style="color:#8b949e"># 1. Create a named persistent volume</span>
+$ docker volume create db-data
+
+<span style="color:#8b949e"># 2. List all available volumes</span>
+$ docker volume ls
+
+<span style="color:#8b949e"># 3. Mount volume to a MySQL container</span>
+$ docker run -d --name mydb -v db-data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=secret mysql:8.0
+
+<span style="color:#8b949e"># 4. Inspect volume details</span>
+$ docker volume inspect db-data
+
+<span style="color:#8b949e"># 5. Remove an unused volume</span>
+$ docker volume rm db-data</pre>
+</div>
+
+<div class="note">
+  <strong>Reference:</strong> Docker.pdf, Slides 15, 16, 27–29.
+</div>
+</div>
+          `
+        },
+        {
+          id: "u3q4", title: "Q4: Git vs Centralized VCS & GitHub",
+          content: `
+<div class="q-block">
+<div class="q-header">
+  <div class="q-num">Question 4 · 8M | CO-3, BL-4</div>
+  <div class="q-title">Compare Git with Centralized VCS and explain GitHub collaboration features.</div>
+  <div class="q-marks">8M</div>
+</div>
+
+<h2>1. Git (Distributed VCS) vs. Centralized VCS (e.g., SVN)</h2>
+
+<table>
+  <tr><th>Feature</th><th>Centralized VCS (e.g., SVN)</th><th>Distributed VCS (Git)</th></tr>
+  <tr>
+    <td><strong>Repository Storage</strong></td>
+    <td>Single central server contains full history. Clients download working copies only.</td>
+    <td>Every client clones the complete repository history, branches, and tags locally.</td>
+  </tr>
+  <tr>
+    <td><strong>Offline Operations</strong></td>
+    <td>Cannot commit, branch, or view history without network connection to the server.</td>
+    <td>All operations (commit, diff, log, branch, merge) execute instantly offline.</td>
+  </tr>
+  <tr>
+    <td><strong>Single Point of Failure</strong></td>
+    <td>High risk: If the central server crashes or corrupts, history is lost.</td>
+    <td>Zero risk: Every developer workstation serves as a full redundant backup.</td>
+  </tr>
+</table>
+
+<h2>2. GitHub Collaboration Features</h2>
+<p>GitHub extends Git by providing structured quality gates for team collaboration:</p>
+
+<ul>
+  <li><strong>Branching Workflow:</strong> Developers isolate changes on dedicated feature branches (e.g., <code>git checkout -b feature-payment</code>).</li>
+  <li><strong>Pull Requests (PRs):</strong> Proposes changes to main branches, triggering automated CI checks (Jenkins/GitHub Actions) to validate code quality.</li>
+  <li><strong>Inline Code Reviews:</strong> Reviewers inspect unified diffs, leave line-by-line comments, and enforce <strong>Branch Protection Rules</strong> requiring approval before merging.</li>
+</ul>
+
+<div class="note">
+  <strong>Reference:</strong> GIT and GITHUB.pdf, Slides 2–5, 18–25.
+</div>
+</div>
+          `
+        }
+      ]
+    },
+    {
+      id: "u4", title: "Unit IV: CI/CD, Testing & Monitoring",
+      sections: [
+        {
+          id: "u4pa", title: "Part-A: 2-Mark Questions (5 Q)",
+          content: `
+<div class="unit-heading">Unit IV: CI/CD, Automated Testing & Monitoring</div>
+<div class="unit-sub">Part-A — 2-Mark Quick Revision</div>
+
+<div class="q-block">
+<div class="q-header">
+  <div class="q-num">Part-A · 2 Marks Each</div>
+  <div class="q-title">Short Answer Questions — 5 Questions</div>
+  <div class="q-marks">2M × 5 = 10 Marks</div>
+</div>
+
+<div class="qa-card">
+  <div class="qa-q">Q5: Write a short note on CI/CD. [2M, CO-4, BL-1]</div>
+  <div class="qa-a">
+    <p><strong>Continuous Integration (CI)</strong> automates frequent code merging, builds, and unit testing upon every code commit. <strong>Continuous Delivery/Deployment (CD)</strong> automatically packages, tests, and deploys validated application releases into target environments safely.</p>
+  </div>
+</div>
+
+<div class="qa-card">
+  <div class="qa-q">Q6: How do you perform Test Automation in DevOps? [2M, CO-4, BL-2]</div>
+  <div class="qa-a">
+    <p>By integrating automated test suites directly into <strong>CI/CD pipelines</strong> (<strong>Shift-Left Testing</strong>). When developers commit code, pipelines automatically execute static code analysis (SonarQube), unit tests (JUnit/PyTest), and API tests (Postman/Newman).</p>
+  </div>
+</div>
+
+<div class="qa-card">
+  <div class="qa-q">Q7: Differentiate between API Testing and API Monitoring. [2M, CO-4, BL-2]</div>
+  <div class="qa-a">
+    <p><strong>API Testing:</strong> Executed <strong>pre-deployment</strong> during development and CI build stages to validate functional correctness, request payloads, and status codes (<strong>Shift-Left</strong>).</p>
+    <p><strong>API Monitoring:</strong> Executed <strong>continuously post-deployment</strong> on production endpoints using synthetic requests to measure response times, availability, and SLA compliance (<strong>Shift-Right</strong>).</p>
+  </div>
+</div>
+
+<div class="qa-card">
+  <div class="qa-q">Q8: Differentiate between TDD and BDD. [2M, CO-4, BL-2]</div>
+  <div class="qa-a">
+    <p><strong>TDD (Test-Driven Development):</strong> Developer-centric practice where unit tests are written <em>before</em> code using the <strong>Red-Green-Refactor</strong> cycle.</p>
+    <p><strong>BDD (Behavior-Driven Development):</strong> Collaboration-focused testing written in human-readable DSL like <strong>Gherkin</strong> (<code>Given-When-Then</code>) to mirror end-user behavior.</p>
+  </div>
+</div>
+
+<div class="qa-card">
+  <div class="qa-q">Q9: What is the role of plugins in Jenkins? [2M, CO-4, BL-2]</div>
+  <div class="qa-a">
+    <p>Plugins form the extensible module ecosystem of Jenkins, allowing it to integrate with external tools like Git repositories, Docker runtime engines, Maven build tools, and <strong>SonarQube</strong> static scanners.</p>
+  </div>
+</div>
+</div>
+          `
+        },
+        {
+          id: "u4q1", title: "Q1: Jenkins Overview & Pipelines",
+          content: `
+<div class="q-block">
+<div class="q-header">
+  <div class="q-num">Question 1 · 8M / 10M | CO-4, BL-2</div>
+  <div class="q-title">Describe Jenkins Overview, Including Pipelines, Build Dependencies, Plugins, and Triggers, with a Declarative Example.</div>
+  <div class="q-marks">8M / 10M</div>
+</div>
+
+<h2>1. Jenkins Overview & Architecture</h2>
+<p><strong>Jenkins</strong> is an open-source, Java-based automation server used globally to build, test, and deploy applications, serving as the backbone of continuous integration and continuous delivery (CI/CD) workflows.</p>
+
+<h2>2. Core Components of Jenkins</h2>
+
+<h3>A. Jenkins Pipelines</h3>
+<p>A pipeline is a suite of plugins that implements CI/CD workflows as code via a version-controlled file called a <code>Jenkinsfile</code>. Supports <strong>Declarative Pipelines</strong> (structured syntax using <code>pipeline</code>, <code>agent</code>, <code>stages</code>, <code>steps</code>) and <strong>Scripted Pipelines</strong> (Groovy-based).</p>
+
+<h3>B. Build Dependencies</h3>
+<p>Jenkins manages runtime toolchains across languages (Java/Maven, Node.js/npm, Python/pip) using global tool configurations, environment variables, or dynamic Docker agents.</p>
+
+<h3>C. Jenkins Plugins</h3>
+<p>Plugins extend functionality (over 1,800+ available). Key plugins include: <strong>Git Plugin</strong> (for SCM checkout), <strong>Pipeline Plugin</strong>, <strong>Docker Plugin</strong>, <strong>JUnit Plugin</strong> (for test reporting), and <strong>Credentials Plugin</strong>.</p>
+
+<h3>D. Pipeline Triggers</h3>
+<p>Define when a pipeline executes: <strong>SCM Triggers</strong> (Git polling), <strong>Webhooks</strong> (instant notifications from GitHub/GitLab on commit), <strong>Cron-based Scheduling</strong> (e.g., nightly builds at 2 AM), <strong>Manual Triggers</strong>, and <strong>Upstream/Downstream Builds</strong>.</p>
+
+<h2>3. Example Declarative Jenkins Pipeline</h2>
+
+<div class="code-block">
+  <span class="code-label">Jenkinsfile</span>
+  <pre>pipeline {
+    agent any
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/vnrorg/api-app.git'
+            }
+        }
+        stage('Build') {
+            steps {
+                sh 'mvn clean install'
+            }
+        }
+        stage('Test') {
+            steps {
+                sh 'mvn test'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                sh './deploy-staging.sh'
+            }
+        }
+    }
+}</pre>
+</div>
+
+<div class="diagram-box">
+  <div class="diagram-title">Jenkins Pipeline Flow</div>
+  <div class="pipeline-flow">
+    <div class="pipe-stage cyan"><strong>Git Commit / Webhook</strong><br>Developer pushes code to GitHub</div>
+    <div class="pipe-arrow">↓</div>
+    <div class="pipe-stage"><strong>Checkout</strong><br>Jenkins pulls source from SCM</div>
+    <div class="pipe-arrow">↓</div>
+    <div class="pipe-stage"><strong>Build</strong><br>mvn clean install / npm build</div>
+    <div class="pipe-arrow">↓</div>
+    <div class="pipe-stage purple"><strong>Test</strong><br>Unit tests, integration tests, SonarQube scan</div>
+    <div class="pipe-arrow">↓</div>
+    <div class="pipe-stage"><strong>Deploy</strong><br>Deploy to staging / production</div>
+  </div>
+</div>
+
+<div class="note">
+  <strong>Reference:</strong> Unit 4 Devops.pdf, Slides 2–11.
+</div>
+</div>
+          `
+        },
+        {
+          id: "u4q2", title: "Q2: Automated Testing, TDD & API Testing",
+          content: `
+<div class="q-block">
+<div class="q-header">
+  <div class="q-num">Question 2 · 8M / 10M | CO-4, BL-3</div>
+  <div class="q-title">Explain the Importance of Automated Testing, TDD, and API Testing Using Postman and JUnit.</div>
+  <div class="q-marks">8M / 10M</div>
+</div>
+
+<h2>1. Importance of Automated Testing in DevOps</h2>
+<p>Automated testing verifies code changes rapidly, consistently, and without manual intervention, acting as a core pillar of CI/CD pipelines.</p>
+<ul>
+  <li><strong>Faster Feedback:</strong> Tests run automatically after every code commit, notifying developers instantly.</li>
+  <li><strong>Early Bug Detection:</strong> Catching bugs early drastically reduces debugging time and production failure costs.</li>
+  <li><strong>Higher Accuracy:</strong> Eliminates human oversight and guarantees repeatable test executions.</li>
+</ul>
+
+<h2>2. Types of Testing Layers</h2>
+
+<div class="diagram-box">
+  <div class="diagram-title">Testing Pyramid</div>
+  <div class="arch-stack">
+    <div class="arch-layer" style="min-width:200px; border-color:var(--orange); background:var(--orange-soft);">
+      <div class="al-name" style="color:var(--orange);">E2E Testing</div>
+      <div class="al-desc">Selenium, Cypress — full user journeys</div>
+    </div>
+    <div class="arch-arrow">↓</div>
+    <div class="arch-layer" style="min-width:300px;">
+      <div class="al-name">Integration Testing</div>
+      <div class="al-desc">Module interaction, API contracts, database</div>
+    </div>
+    <div class="arch-arrow">↓</div>
+    <div class="arch-layer control" style="min-width:400px;">
+      <div class="al-name">Unit Testing (Largest Layer)</div>
+      <div class="al-desc">JUnit (Java), pytest (Python) — individual methods in isolation</div>
+    </div>
+  </div>
+</div>
+
+<h2>3. Test-Driven Development (TDD) & The Red-Green-Refactor Cycle</h2>
+<p>TDD is a software development methodology where automated tests are written <em>before</em> production code:</p>
+<ol>
+  <li><strong>Red Phase:</strong> Write a failing automated test for a new feature. The failure confirms the test is valid.</li>
+  <li><strong>Green Phase:</strong> Write the minimum amount of production code required to make the test pass.</li>
+  <li><strong>Refactor Phase:</strong> Clean up and optimize the code structure while ensuring all tests stay green.</li>
+</ol>
+
+<h2>4. API Testing Using Postman</h2>
+<p>APIs act as the architectural backbone of microservices. <strong>Postman</strong> is widely used for functional, positive/negative, authentication, and performance testing of REST endpoints.</p>
+
+<div class="code-block">
+  <span class="code-label">postman_test_script.js</span>
+  <pre>pm.test("Status code is 200", function () {
+    pm.response.to.have.status(200);
+});
+pm.test("Response time is below 500ms", function () {
+    pm.expect(pm.response.responseTime).to.be.below(500);
+});</pre>
+</div>
+
+<div class="note">
+  <strong>Reference:</strong> Unit 4 Devops.pdf, Slides 12–39.
+</div>
+</div>
+          `
+        },
+        {
+          id: "u4q3", title: "Q3: Logging, Monitoring & Tool Comparison",
+          content: `
+<div class="q-block">
+<div class="q-header">
+  <div class="q-num">Question 3 · 8M / 10M | CO-4, BL-4</div>
+  <div class="q-title">Analyze the Importance of Logging and Monitoring in DevOps, and Compare Prometheus, Grafana, Splunk, and New Relic.</div>
+  <div class="q-marks">8M / 10M</div>
+</div>
+
+<h2>1. Importance of Logging and Monitoring (Observability)</h2>
+<p>In distributed microservices environments, applications generate massive volumes of runtime data. Monitoring and logging provide operational visibility to prevent downtime and ensure reliability.</p>
+
+<h3>The Three Pillars of Observability</h3>
+
+<div class="diagram-box">
+  <div class="diagram-title">Three Pillars of Observability</div>
+  <div class="compare-grid" style="grid-template-columns:1fr 1fr 1fr;">
+    <div class="compare-card" style="border-left:3px solid var(--cyan);">
+      <h4 style="color:var(--cyan);">📊 Metrics</h4>
+      <p style="font-size:12px;">Numerical time-series measurements (CPU %, memory, HTTP request rates) monitored via <strong>Prometheus</strong>.</p>
+    </div>
+    <div class="compare-card" style="border-left:3px solid var(--nv-green);">
+      <h4 style="color:var(--nv-green);">📝 Logs</h4>
+      <p style="font-size:12px;">Timestamped event records from systems and apps, managed via <strong>Splunk</strong> or <strong>New Relic</strong>.</p>
+    </div>
+    <div class="compare-card" style="border-left:3px solid var(--purple);">
+      <h4 style="color:var(--purple);">🔗 Traces</h4>
+      <p style="font-size:12px;">End-to-end journey of single requests across distributed microservices (Jaeger, New Relic).</p>
+    </div>
+  </div>
+</div>
+
+<h2>2. Comparison of Core Monitoring & Logging Tools</h2>
+
+<table>
+  <tr><th>Tool</th><th>Type</th><th>Core Functionality</th><th>Key Features</th></tr>
+  <tr>
+    <td><strong>Prometheus</strong></td>
+    <td>Monitoring &amp; Metrics</td>
+    <td>Pull-based metrics collection server with built-in Time-Series Database (TSDB).</td>
+    <td>Uses <strong>PromQL</strong> query language (e.g., <code>rate(http_requests_total[5m])</code>).</td>
+  </tr>
+  <tr>
+    <td><strong>Grafana</strong></td>
+    <td>Visualization &amp; Dashboards</td>
+    <td>Open-source visualization that turns time-series data from Prometheus into rich dashboards.</td>
+    <td>Multi-datasource unification, customizable panels, alerting engine.</td>
+  </tr>
+  <tr>
+    <td><strong>Splunk</strong></td>
+    <td>Log Management &amp; SIEM</td>
+    <td>Centralized machine data platform that ingests, indexes, and searches logs without traditional SQL.</td>
+    <td>Real-time analysis, Search Processing Language (SPL), security correlation.</td>
+  </tr>
+  <tr>
+    <td><strong>New Relic</strong></td>
+    <td>Full-Stack Observability</td>
+    <td>Cloud-native SaaS platform integrating metrics, logs, and traces into a unified UI.</td>
+    <td>AI-powered pattern detection, <strong>Logs in Context</strong> linked with APM traces.</td>
+  </tr>
+</table>
+
+<div class="note">
+  <strong>Reference:</strong> Unit 4 Devops.pdf, Slides 40–65.
+</div>
+</div>
+          `
+        }
+      ]
+    },
+    {
+      id: "u5", title: "Unit V: IaC, GitOps & DevSecOps",
+      sections: [
+        {
+          id: "u5pa", title: "Part-A: 2-Mark Questions (5 Q)",
+          content: `
+<div class="unit-heading">Unit V: Infrastructure as Code, GitOps & DevSecOps</div>
+<div class="unit-sub">Part-A — 2-Mark Quick Revision</div>
+
+<div class="q-block">
+<div class="q-header">
+  <div class="q-num">Part-A · 2 Marks Each</div>
+  <div class="q-title">Short Answer Questions — 5 Questions</div>
+  <div class="q-marks">2M × 5 = 10 Marks</div>
+</div>
+
+<div class="qa-card">
+  <div class="qa-q">Q10: Define Infrastructure as Code (IaC) with an example. [2M, CO-5, BL-2]</div>
+  <div class="qa-a">
+    <p><strong>IaC</strong> is the practice of provisioning and managing computing infrastructure using declarative configuration definition files rather than manual web console operations.</p>
+    <p><strong>Example (Terraform HCL):</strong></p>
+    <div class="code-block" style="margin:8px 0;"><pre>provider "aws" { region = "us-east-1" }
+resource "aws_instance" "app_server" {
+  ami           = "ami-12345678"
+  instance_type = "t2.micro"
+}</pre></div>
+  </div>
+</div>
+
+<div class="qa-card">
+  <div class="qa-q">Q11: What is the role of the State File (terraform.tfstate) in Terraform? [2M, CO-5, BL-2]</div>
+  <div class="qa-a">
+    <p>The state file serves as the <strong>authoritative single source of truth</strong> mapping declared HCL code to real-world cloud resource IDs. It tracks dependency metadata, speeds up execution plans, detects <strong>configuration drift</strong>, and prevents race conditions via <strong>state locking</strong>.</p>
+  </div>
+</div>
+
+<div class="qa-card">
+  <div class="qa-q">Q12: What is a Terraform Provider? Mention two examples. [2M, CO-5, BL-1]</div>
+  <div class="qa-a">
+    <p>A <strong>Terraform Provider</strong> is a plugin that translates Terraform HCL commands into API requests for target cloud platforms.</p>
+    <p><strong>Examples:</strong> <code>aws</code>, <code>kubernetes</code>, <code>azurerm</code>.</p>
+  </div>
+</div>
+
+<div class="qa-card">
+  <div class="qa-q">Q13: Define ArgoCD and its purpose in GitOps. [2M, CO-5, BL-1]</div>
+  <div class="qa-a">
+    <p><strong>ArgoCD</strong> is a declarative, Kubernetes-native GitOps continuous delivery engine. It continuously monitors Git repositories and automatically synchronizes the live cluster state to eliminate <strong>configuration drift</strong>.</p>
+  </div>
+</div>
+
+<div class="qa-card">
+  <div class="qa-q">Q14: What is HashiCorp Vault in DevSecOps? [2M, CO-5, BL-2]</div>
+  <div class="qa-a">
+    <p><strong>Vault</strong> is an identity-based secrets management tool that securely encrypts credentials, eliminates hardcoded passwords from code, provisions short-lived <strong>dynamic secrets</strong>, and enforces role-based access policies (RBAC).</p>
+  </div>
+</div>
+</div>
+          `
+        },
+        {
+          id: "u5q1", title: "Q1: Terraform, IaC & State Management",
+          content: `
+<div class="q-block">
+<div class="q-header">
+  <div class="q-num">Question 1 · 8M / 10M | CO-5, BL-4</div>
+  <div class="q-title">Discuss the Role of Terraform in Infrastructure as Code, Its Core Workflow, and State Management.</div>
+  <div class="q-marks">8M / 10M</div>
+</div>
+
+<h2>1. What is Terraform and Its Architectural Role</h2>
+<p><strong>Terraform</strong> (developed by HashiCorp) is an open-source, multi-cloud Infrastructure as Code (IaC) tool that uses <strong>HashiCorp Configuration Language (HCL)</strong> to provision and manage cloud resources (VMs, VPCs, subnets, S3 buckets, Kubernetes clusters) declaratively.</p>
+
+<div class="diagram-box">
+  <div class="diagram-title">Terraform Architectural Components</div>
+  <div class="arch-stack">
+    <div class="arch-layer control">
+      <div class="al-name">Configuration Files (.tf)</div>
+      <div class="al-desc">Declarative HCL code defining desired infrastructure</div>
+    </div>
+    <div class="arch-arrow">↓</div>
+    <div class="arch-layer devops">
+      <div class="al-name">Terraform Core Engine</div>
+      <div class="al-desc">Dependency graph resolution · Plan generation · Execution</div>
+    </div>
+    <div class="arch-arrow">↓</div>
+    <div style="display:flex; gap:8px;">
+      <div class="arch-layer worker" style="min-width:120px;">
+        <div class="al-name" style="font-size:11px;">AWS Provider</div>
+      </div>
+      <div class="arch-layer worker" style="min-width:120px;">
+        <div class="al-name" style="font-size:11px;">Azure Provider</div>
+      </div>
+      <div class="arch-layer worker" style="min-width:120px;">
+        <div class="al-name" style="font-size:11px;">K8s Provider</div>
+      </div>
+    </div>
+    <div class="arch-arrow">↓ API calls</div>
+    <div class="arch-layer" style="border-color:var(--yellow); background:var(--yellow-soft);">
+      <div class="al-name" style="color:var(--yellow);">terraform.tfstate</div>
+      <div class="al-desc">State file — maps code to real-world resource IDs</div>
+    </div>
+  </div>
+</div>
+
+<h2>2. The Complete Terraform 5-Stage Lifecycle Workflow</h2>
+
+<div class="diagram-box">
+  <div class="diagram-title">Terraform Lifecycle Workflow</div>
+  <div class="pipeline-flow">
+    <div class="pipe-stage"><strong>1. Write</strong><br>Author declarative .tf HCL files</div>
+    <div class="pipe-arrow">↓</div>
+    <div class="pipe-stage cyan"><strong>2. terraform init</strong><br>Download provider plugins · Configure backends</div>
+    <div class="pipe-arrow">↓</div>
+    <div class="pipe-stage purple"><strong>3. terraform plan</strong><br>Dry-run: preview additions (+), modifications (~), destructions (-)</div>
+    <div class="pipe-arrow">↓</div>
+    <div class="pipe-stage"><strong>4. terraform apply</strong><br>Execute real cloud API calls to provision infrastructure</div>
+    <div class="pipe-arrow">↓</div>
+    <div class="pipe-stage cyan"><strong>5. terraform destroy</strong><br>Safely tear down all provisioned resources</div>
+  </div>
+</div>
+
+<ol>
+  <li><strong>Write:</strong> Developers author declarative infrastructure definitions in <code>.tf</code> HCL files.</li>
+  <li><strong><code>terraform init</code>:</strong> Initializes the working directory, downloads required cloud provider plugins, and configures remote backends.</li>
+  <li><strong><code>terraform plan</code>:</strong> Executes a dry-run analysis, generating an execution plan previewing additions (<code>+</code>), modifications (<code>~</code>), and destructions (<code>-</code>).</li>
+  <li><strong><code>terraform apply</code>:</strong> Executes real-world cloud API calls to provision infrastructure matching the desired state.</li>
+  <li><strong><code>terraform destroy</code>:</strong> Safely tears down and deletes all provisioned cloud resources when decommissioning.</li>
+</ol>
+
+<h2>3. Terraform State Management (terraform.tfstate)</h2>
+<ul>
+  <li><strong>Role:</strong> The <code>terraform.tfstate</code> file serves as the authoritative single source of truth mapping declared HCL code to real-world cloud resource IDs and attributes.</li>
+  <li><strong>Importance:</strong> (1) Tracks resource dependency metadata, (2) Accelerates execution performance, (3) Enables <strong>Drift Detection</strong> by comparing cloud reality against desired code, and (4) Facilitates secure team collaboration via <strong>Remote State Locking</strong> (e.g., AWS S3 with DynamoDB locking) to prevent race conditions.</li>
+</ul>
+
+<div class="note">
+  <strong>Reference:</strong> IaC and Terraform.pdf, Slides 4, 12, 13; Terraform.pdf, Slides 6, 17, 25.
+</div>
+</div>
+          `
+        },
+        {
+          id: "u5q2", title: "Q2: GitOps Workflow with ArgoCD",
+          content: `
+<div class="q-block">
+<div class="q-header">
+  <div class="q-num">Question 2 · 8M / 10M | CO-5, BL-3</div>
+  <div class="q-title">Explain the End-to-End GitOps Workflow Using ArgoCD and Kubernetes.</div>
+  <div class="q-marks">8M / 10M</div>
+</div>
+
+<h2>1. Core Principles of GitOps</h2>
+<p>GitOps maintains <strong>Git as the single source of truth</strong> for both application and infrastructure state.</p>
+<ul>
+  <li><strong>Declarative Descriptions:</strong> The entire desired state (Deployments, Services, RBAC) is declared in Git using YAML or Helm charts.</li>
+  <li><strong>Automated Reconciliation:</strong> Software agents running inside the cluster continuously pull configurations from Git and reconcile the live environment.</li>
+</ul>
+
+<h2>2. ArgoCD Reconciliation Architecture & Workflow</h2>
+
+<div class="diagram-box">
+  <div class="diagram-title">ArgoCD GitOps Reconciliation Workflow</div>
+  <div class="pipeline-flow">
+    <div class="pipe-stage cyan"><strong>1. Developer Commit</strong><br>Push updated K8s manifests / Helm charts to GitHub</div>
+    <div class="pipe-arrow">↓</div>
+    <div class="pipe-stage"><strong>2. ArgoCD Repo Server</strong><br>Continuously watches Git repository · Caches &amp; renders manifests</div>
+    <div class="pipe-arrow">↓</div>
+    <div class="pipe-stage purple"><strong>3. Desired vs. Actual Comparison</strong><br>Application Controller compares Git state vs. live cluster state</div>
+    <div class="pipe-arrow">↓</div>
+    <div class="pipe-stage"><strong>4. Automated Synchronization</strong><br>ArgoCD executes internal kubectl apply to deploy workloads</div>
+    <div class="pipe-arrow">↓</div>
+    <div class="pipe-stage cyan"><strong>5. Drift Correction</strong><br>Manual CLI changes flagged as "Out of Sync" → auto-overridden back to Git</div>
+  </div>
+</div>
+
+<ol>
+  <li><strong>Developer Commit:</strong> A developer pushes updated Kubernetes manifests or Helm charts containing new image tags (e.g., <code>v2.0.0</code>) to GitHub.</li>
+  <li><strong>Change Detection:</strong> The <strong>ArgoCD Repo Server</strong> continuously watches the target Git repository, caching and rendering manifests.</li>
+  <li><strong>Desired vs. Actual Comparison:</strong> The <strong>ArgoCD Application Controller</strong> compares the desired state declared in Git with the live runtime state of the Kubernetes cluster.</li>
+  <li><strong>Automated Synchronization:</strong> ArgoCD triggers an automated sync, executing internal <code>kubectl apply</code> commands to deploy the container workloads.</li>
+  <li><strong>Drift Correction:</strong> If an engineer makes manual out-of-band changes via the CLI, ArgoCD flags an <strong>Out of Sync</strong> state and automatically overrides it back to match Git.</li>
+</ol>
+
+<div class="note">
+  <strong>Reference:</strong> GitOps and ArgoCD.pdf, Slides 2, 6, 9, 10, 19, 21, 22.
+</div>
+</div>
+          `
+        },
+        {
+          id: "u5q3", title: "Q3: DevSecOps & Container Security",
+          content: `
+<div class="q-block">
+<div class="q-header">
+  <div class="q-num">Question 3 · 8M / 10M | CO-5, BL-2</div>
+  <div class="q-title">Explain DevSecOps Practices for Securing Containerized Applications, Including Shift-Left Security, Container Scanning, and Secret Management (Vault).</div>
+  <div class="q-marks">8M / 10M</div>
+</div>
+
+<h2>1. Shift-Left Security & SAST/SCA</h2>
+<p><strong>DevSecOps</strong> embeds security controls seamlessly across every stage of the software delivery lifecycle.</p>
+<ul>
+  <li><strong>Shift-Left Approach:</strong> Security checks are moved earlier into the coding and build phases rather than occurring post-deployment.</li>
+  <li><strong>Static Application Security Testing (SAST):</strong> Tools like <strong>SonarQube</strong> or <strong>CodeQL</strong> analyze source code during pull requests to catch vulnerabilities like SQL injection and insecure patterns.</li>
+  <li><strong>Software Composition Analysis (SCA):</strong> Tools like <strong>Snyk</strong> or <strong>OWASP Dependency-Check</strong> audit third-party open-source libraries for known CVEs.</li>
+</ul>
+
+<h2>2. Container Image Vulnerability Scanning</h2>
+<ul>
+  <li><strong>Base Image Hardening:</strong> Use minimal, verified base images (e.g., Alpine Linux, Distroless) to reduce the system attack surface.</li>
+  <li><strong>Pipeline Scanning:</strong> Tools like <strong>Trivy</strong> or <strong>Clair</strong> scan container image layers during CI builds, enforcing quality gates that halt pipelines if High/Critical vulnerabilities are found.</li>
+</ul>
+
+<h2>3. Secret Management with HashiCorp Vault</h2>
+<ul>
+  <li><strong>Problem:</strong> Hardcoding plaintext passwords, database credentials, or API tokens in source code and Dockerfiles creates severe security risks.</li>
+  <li><strong>Solution:</strong> <strong>HashiCorp Vault</strong> provides a centralized, identity-based secrets manager that encrypts data at rest (AES-256-GCM), enforces fine-grained <strong>RBAC policies</strong> (HCL-based), and generates short-lived <strong>dynamic secrets</strong> with automated lease revocation.</li>
+</ul>
+
+<div class="code-block">
+  <span class="code-label">vault_commands.sh</span>
+  <pre><span style="color:#8b949e"># Enable key-value secrets engine</span>
+$ vault secrets enable -path secret kv-v2
+
+<span style="color:#8b949e"># Store a production database credential</span>
+$ vault kv put secret/production/db username="db_admin" password="SecurePassword2026"
+
+<span style="color:#8b949e"># Retrieve the credential at runtime</span>
+$ vault kv get secret/production/db</pre>
+</div>
+
+<div class="diagram-box">
+  <div class="diagram-title">DevSecOps Shift-Left Pipeline</div>
+  <div class="pipeline-flow">
+    <div class="pipe-stage cyan"><strong>Code Phase</strong><br>SAST (SonarQube) · SCA (Snyk) on PR</div>
+    <div class="pipe-arrow">↓</div>
+    <div class="pipe-stage"><strong>Build Phase</strong><br>Container image scan (Trivy) · Quality gate</div>
+    <div class="pipe-arrow">↓</div>
+    <div class="pipe-stage purple"><strong>Deploy Phase</strong><br>Vault injects dynamic secrets · RBAC enforced</div>
+    <div class="pipe-arrow">↓</div>
+    <div class="pipe-stage"><strong>Runtime Phase</strong><br>Continuous monitoring · Audit logging</div>
+  </div>
+</div>
+
+<div class="note">
+  <strong>Reference:</strong> DevSecOps.pdf, Slides 2, 4, 5, 6, 11, 18, 20.
+</div>
+</div>
+          `
+        }
+      ]
+    }
+  ]
+};
+
+const flashcardData = [
+  [
+    {q:"Docker Image vs Container?",a:"Image = read-only, immutable static blueprint. Container = runnable, isolated active runtime process instance with read-write layer."},
+    {q:"ConfigMap vs Secret?",a:"ConfigMap = non-confidential plain-text key-value config. Secret = confidential data (passwords, tokens, TLS certs) encoded in Base64, encrypted at rest in etcd."},
+    {q:"Primary purpose of Kubernetes?",a:"Open-source container orchestration: automates deployment, horizontal autoscaling, self-healing, load balancing, and storage orchestration across clusters."},
+    {q:"Advantages of Docker Hub?",a:"Centralized public/private registry, automated vulnerability scanning, seamless CI/CD webhook integration, version control for container artifacts."},
+    {q:"Kubernetes Control Plane components?",a:"kube-apiserver (gateway), etcd (state DB), kube-scheduler (Pod assignment), kube-controller-manager (control loops)."},
+    {q:"Worker Node components?",a:"kubelet (node agent), kube-proxy (network routing), Container Runtime (containerd/Docker)."},
+    {q:"K8s flat networking model?",a:"Every Pod gets unique routable IP. Direct Pod-to-Pod communication without NAT. Implemented via CNI plugins (Calico, Flannel, Cilium)."},
+    {q:"HPA vs VPA vs Cluster Autoscaler?",a:"HPA = adjusts Pod replica count. VPA = adjusts CPU/memory requests per container. Cluster Autoscaler = adds/removes worker nodes."},
+    {q:"PV vs PVC vs StatefulSet?",a:"PV = cluster-wide storage resource. PVC = developer's storage request. StatefulSet = workload controller for databases needing stable network IDs + dedicated storage."},
+    {q:"Docker volume command to mount?",a:"docker run -d --name mydb -v db-data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=secret mysql:8.0"},
+    {q:"Git vs SVN (3 key differences)?",a:"1) Git clones full history locally; SVN has single central server. 2) Git works offline; SVN requires network. 3) Git has no single point of failure; SVN server crash = history lost."},
+    {q:"GitHub collaboration features?",a:"Branching workflow, Pull Requests (trigger CI checks), inline code reviews with Branch Protection Rules requiring approval before merge."}
+  ],
+  [
+    {q:"What is CI/CD?",a:"CI = Continuous Integration (auto merge, build, test on commit). CD = Continuous Delivery/Deployment (auto package, test, deploy validated releases)."},
+    {q:"How to perform Test Automation in DevOps?",a:"Integrate automated test suites into CI/CD pipelines (Shift-Left). On commit: static analysis (SonarQube), unit tests (JUnit), API tests (Postman/Newman)."},
+    {q:"API Testing vs API Monitoring?",a:"Testing = pre-deployment, validates functionality (Shift-Left). Monitoring = post-deployment, tracks uptime/latency/SLA on production (Shift-Right)."},
+    {q:"TDD vs BDD?",a:"TDD = developer-centric, tests before code, Red-Green-Refactor cycle. BDD = collaboration-focused, human-readable Gherkin (Given-When-Then)."},
+    {q:"Role of Jenkins plugins?",a:"Extensible module ecosystem integrating Jenkins with Git, Docker, Maven, SonarQube. 1800+ plugins available."},
+    {q:"Jenkins pipeline trigger types?",a:"SCM triggers (Git polling), Webhooks (instant on commit), Cron scheduling, Manual triggers, Upstream/Downstream builds."},
+    {q:"TDD Red-Green-Refactor cycle?",a:"Red = write failing test. Green = write minimum code to pass test. Refactor = clean up code while tests stay green."},
+    {q:"Testing pyramid layers?",a:"Bottom: Unit tests (JUnit, pytest) — largest. Middle: Integration tests (API, DB). Top: E2E tests (Selenium, Cypress) — fewest."},
+    {q:"Three Pillars of Observability?",a:"Metrics (Prometheus — CPU, memory, request rates), Logs (Splunk — event records), Traces (Jaeger — request journey across microservices)."},
+    {q:"Prometheus vs Grafana?",a:"Prometheus = pull-based metrics collection with TSDB and PromQL. Grafana = visualization tool that turns Prometheus data into dashboards."},
+    {q:"Splunk vs New Relic?",a:"Splunk = log management & SIEM with SPL search. New Relic = full-stack SaaS observability integrating metrics, logs, and traces with AI detection."},
+    {q:"Postman test script example?",a:"pm.test('Status code is 200', function() { pm.response.to.have.status(200); });"}
+  ],
+  [
+    {q:"What is IaC?",a:"Infrastructure as Code — provisioning infrastructure using declarative config files instead of manual console operations. Example: Terraform HCL declaring AWS EC2 instance."},
+    {q:"Role of terraform.tfstate?",a:"Authoritative single source of truth mapping HCL code to real-world resource IDs. Tracks dependencies, speeds up plans, enables drift detection, supports remote state locking."},
+    {q:"Terraform Provider + examples?",a:"Plugin translating HCL into cloud API requests. Examples: aws, kubernetes, azurerm."},
+    {q:"Terraform 5-stage workflow?",a:"1) Write .tf files 2) terraform init (download plugins) 3) terraform plan (dry-run preview) 4) terraform apply (provision) 5) terraform destroy (decommission)."},
+    {q:"What is ArgoCD?",a:"Declarative, Kubernetes-native GitOps CD engine. Monitors Git repos, compares desired vs live cluster state, auto-synchronizes to eliminate drift."},
+    {q:"GitOps core principles?",a:"1) Git is single source of truth. 2) Entire state declared declaratively (YAML/Helm). 3) Automated reconciliation by in-cluster agents pulling from Git."},
+    {q:"ArgoCD drift correction?",a:"If manual CLI changes are made, ArgoCD flags 'Out of Sync' and automatically overrides the live state back to match Git."},
+    {q:"What is HashiCorp Vault?",a:"Identity-based secrets manager. Encrypts data at rest (AES-256-GCM), enforces RBAC, generates short-lived dynamic secrets with lease revocation."},
+    {q:"Shift-Left Security meaning?",a:"Moving security checks earlier into coding/build phases (SAST, SCA) rather than post-deployment."},
+    {q:"SAST vs SCA?",a:"SAST = Static Application Security Testing (SonarQube, CodeQL) — analyzes source code for vulnerabilities. SCA = Software Composition Analysis (Snyk) — audits third-party libraries for CVEs."},
+    {q:"Container image scanning tools?",a:"Trivy, Clair — scan image layers during CI builds, halt pipelines if High/Critical vulnerabilities found."},
+    {q:"Vault CLI: store a secret?",a:"vault kv put secret/production/db username='db_admin' password='SecurePassword2026'"}
+  ]
+];
+
+let currentUnit = 0;
+let currentSection = 0;
+let readSections = new Set();
+
+function renderSidebar() {
+  const nav = document.getElementById('sidebarNav');
+  nav.innerHTML = '';
+  courseData.units.forEach((unit, ui) => {
+    const btn = document.createElement('button');
+    btn.className = 'unit-btn' + (ui === currentUnit ? ' active' : '');
+    btn.innerHTML = unit.title + '<span class="ch">▸</span>';
+    btn.onclick = () => { currentUnit = ui; currentSection = 0; renderSidebar(); renderContent(); };
+    nav.appendChild(btn);
+    const list = document.createElement('div');
+    list.className = 'sec-list' + (ui === currentUnit ? ' open' : '');
+    unit.sections.forEach((sec, si) => {
+      const link = document.createElement('a');
+      link.className = 'sec-link' + (ui === currentUnit && si === currentSection ? ' active' : '');
+      link.textContent = sec.title;
+      link.onclick = (e) => { e.preventDefault(); currentUnit = ui; currentSection = si; renderSidebar(); renderContent(); };
+      list.appendChild(link);
+    });
+    nav.appendChild(list);
+  });
+}
+
+function renderContent() {
+  const area = document.getElementById('contentArea');
+  const unit = courseData.units[currentUnit];
+  const sec = unit.sections[currentSection];
+  let html = sec.content;
+  const prevDisabled = currentUnit === 0 && currentSection === 0;
+  const nextDisabled = currentUnit === courseData.units.length - 1 && currentSection === unit.sections.length - 1;
+  let prevTarget = null, nextTarget = null;
+  if (!prevDisabled) {
+    if (currentSection > 0) prevTarget = [currentUnit, currentSection - 1];
+    else prevTarget = [currentUnit - 1, courseData.units[currentUnit - 1].sections.length - 1];
+  }
+  if (!nextDisabled) {
+    if (currentSection < unit.sections.length - 1) nextTarget = [currentUnit, currentSection + 1];
+    else nextTarget = [currentUnit + 1, 0];
+  }
+  html += '<div class="top-nav">';
+  html += '<button class="nav-btn" ' + (prevDisabled ? 'disabled' : '') + ' onclick="' + (prevTarget ? 'jumpTo(' + prevTarget[0] + ',' + prevTarget[1] + ')' : '') + '">← Previous</button>';
+  html += '<span style="font-size:13px; color:var(--text-tertiary);">' + (currentSection + 1) + ' of ' + unit.sections.length + '</span>';
+  html += '<button class="nav-btn" ' + (nextDisabled ? 'disabled' : '') + ' onclick="' + (nextTarget ? 'jumpTo(' + nextTarget[0] + ',' + nextTarget[1] + ')' : '') + '">Next →</button>';
+  html += '</div>';
+  if (currentSection === unit.sections.length - 1 && flashcardData[currentUnit]) {
+    html += '<h2 style="margin-top:40px; font-size:20px;">Quick Review Flashcards</h2>';
+    html += '<p style="font-size:13px; color:var(--text-tertiary); margin-bottom:16px;">Click cards to reveal answers</p>';
+    flashcardData[currentUnit].forEach(function(card) {
+      html += '<div class="flashcard" onclick="this.classList.toggle(\'flipped\')"><div class="fc-q">' + card.q + '</div><div class="fc-a">' + card.a + '</div><div class="fc-hint">Click to flip</div></div>';
+    });
+  }
+  area.innerHTML = html;
+  readSections.add(sec.id);
+  updateProgress();
+  window.scrollTo(0, 0);
+}
+
+function updateProgress() {
+  const total = courseData.units.reduce(function(a, u) { return a + u.sections.length; }, 0);
+  const pct = Math.round((readSections.size / total) * 100);
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progressText').textContent = pct + '% complete';
+}
+
+function jumpTo(ui, si) {
+  currentUnit = ui; currentSection = si;
+  renderSidebar(); renderContent();
+}
+
+function setupSearch() {
+  const box = document.getElementById('searchBox');
+  const res = document.getElementById('searchResults');
+  box.addEventListener('input', function(e) {
+    const q = e.target.value.toLowerCase().trim();
+    if (!q) { res.style.display = 'none'; return; }
+    const matches = [];
+    courseData.units.forEach(function(u, ui) {
+      u.sections.forEach(function(s, si) {
+        const text = (s.title + ' ' + s.content.replace(/<[^>]+>/g, ' ')).toLowerCase();
+        if (text.includes(q)) {
+          const rawText = s.content.replace(/<[^>]+>/g, ' ');
+          const idx = text.indexOf(q);
+          const snippet = rawText.substring(Math.max(0, idx - 30), idx + 60);
+          matches.push({ui: ui, si: si, title: s.title, snippet: '...' + snippet + '...'});
+        }
+      });
+    });
+    if (!matches.length) { res.innerHTML = '<div class="search-result"><span style="color:var(--text-tertiary)">No results</span></div>'; }
+    else {
+      res.innerHTML = matches.map(function(m) {
+        return '<div class="search-result" onclick="jumpTo(' + m.ui + ',' + m.si + '); document.getElementById(\'searchResults\').style.display=\'none\'; document.getElementById(\'searchBox\').value=\'\';"><div class="sr-title">' + m.title + '</div><div class="sr-snippet">' + m.snippet + '</div></div>';
+      }).join('');
+    }
+    res.style.display = 'block';
+  });
+  document.addEventListener('click', function(e) {
+    if (!box.contains(e.target) && !res.contains(e.target)) res.style.display = 'none';
+  });
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('open');
+}
+
+renderSidebar();
+renderContent();
+setupSearch();
+</script>
+</body>
+</html>
